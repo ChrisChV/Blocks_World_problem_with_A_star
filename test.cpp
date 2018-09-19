@@ -16,8 +16,8 @@ class Padre{
         int val;
         
     };
-    Padre(){
-        compare = this->test;
+    Padre(function<bool(Node *, Node *)> compare){
+        this->compare = compare;
     }
     vector<Node *> vec;
     function<bool(Node *, Node *)> compare;
@@ -37,15 +37,15 @@ class Padre{
         }
     }
 
-    bool test(Padre::Node * a, Padre::Node * b){
-        return a->val > b->val;
-    }
+    
 };
 
-
+bool test(Padre::Node * a, Padre::Node * b){
+    return a->val > b->val;
+}
 
 int main(int argc, char const *argv[]){
-    Padre pp;
+    Padre pp(test);
     pp.tt(2);
     pp.tt(1);
     pp.tt(-2);

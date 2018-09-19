@@ -36,6 +36,7 @@ class BlockNode{
             return true;
         }
 
+
         HeuristicValue heuristicValue;
 
     private:

@@ -19,11 +19,11 @@ HeuristicValue heuristic(BlockNode & node){
 }
 
 vector<BlockNode> createSons(BlockNode & father){
-
+    
 }
 
 bool heapCompare(A_Asterisco<BlockNode>::Node * a, A_Asterisco<BlockNode>::Node * b){
-   
+    return a->heuristicValue > b->heuristicValue;
 }
 
 bool restrictions(BlockNode & node){
@@ -31,7 +31,7 @@ bool restrictions(BlockNode & node){
 }
 
 HashKey hashFun(BlockNode * node){
-    
+    return node->heuristicValue;
 }
 
 bool hashCompare(BlockNode * a, BlockNode * b){
