@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include "A_asterisco.h"
 
 using namespace std;
 
@@ -34,6 +35,8 @@ class BlockNode{
             }
             return true;
         }
+
+        HeuristicValue heuristicValue;
 
     private:
         vector<vector<Block>> torres;

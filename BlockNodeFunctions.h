@@ -4,12 +4,18 @@
 #include <iostream>
 #include <vector>
 #include "BlockNode.h"
-#include "A_asterisco.h"
 
 using namespace std;
 
 HeuristicValue heuristic(BlockNode & node){
+    HeuristicValue res = 0;
 
+    /*
+    TODO
+    */
+
+   node.heuristicValue = res;
+   return res;
 }
 
 vector<BlockNode> createSons(BlockNode & father){
@@ -17,7 +23,7 @@ vector<BlockNode> createSons(BlockNode & father){
 }
 
 bool heapCompare(A_Asterisco<BlockNode>::Node * a, A_Asterisco<BlockNode>::Node * b){
-    
+   
 }
 
 bool restrictions(BlockNode & node){
@@ -25,11 +31,11 @@ bool restrictions(BlockNode & node){
 }
 
 HashKey hashFun(BlockNode * node){
-
+    
 }
 
 bool hashCompare(BlockNode * a, BlockNode * b){
-
+    return (*a) == (*b);
 }
 
 
