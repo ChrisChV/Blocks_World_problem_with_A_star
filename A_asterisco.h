@@ -31,12 +31,12 @@ class A_Asterisco{
             public:
                 Node(){
                     this->heuristicValue = 0;
-                }:
+                };
                 Node(NodeObject nodeObject, Node * father){
                     this->nodeObject = nodeObject;
                     this->heuristicValue = 0;
                     this->father = father;
-                }
+                };
                 void createSons();
                 void setHeuristicValue();
                 void deleteNode();

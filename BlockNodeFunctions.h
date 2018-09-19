@@ -20,11 +20,11 @@ bool heapCompare(A_Asterisco<BlockNode>::Node * a, A_Asterisco<BlockNode>::Node 
     
 }
 
-HashKey hashFun(BlockNode * node){
-
+bool restrictions(BlockNode & node){
+    return true;
 }
 
-bool restrictions(BlockNode & node){
+HashKey hashFun(BlockNode * node){
 
 }
 
