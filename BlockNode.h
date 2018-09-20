@@ -3,27 +3,30 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include "A_asterisco.h"
 
 using namespace std;
 
 typedef int BlockId;
 
+const string END_OF_TOWER = "x";
+
 class BlockNode{
     public:
         class Block{
-            Block(BlockId id){
-                this->id = id;
-            }
             public:
-                BlockId id;
-            
+                Block(BlockId id){
+                   this->id = id;
+                }
                 bool operator ==(Block other){
                     return id == other.id;
                 }
                 bool operator !=(Block other){
                     return id != other.id;
                 }
+
+                BlockId id;
         };
 
         bool operator ==(BlockNode other){
@@ -36,13 +39,36 @@ class BlockNode{
             return true;
         }
 
+        BlockNode(){heuristicValue = 0; numOfBlocks = 0;};
+        BlockNode(string fileName);
+
         void deleteBlockNode();
         void changeBlock(int sourceTorre, int destTorre);
+        void print();
 
         HeuristicValue heuristicValue;
         vector<vector<Block>> torres;
+        int numOfBlocks;
 };
 
+
+BlockNode::BlockNode(string fileName){
+    ifstream file(fileName);
+    numOfBlocks = 0;
+    string temp = "";
+    vector<Block> tempTower;
+    while(file >> temp){
+        if(temp == END_OF_TOWER){
+            torres.push_back(tempTower);
+            tempTower.clear();
+            tempTower.shrink_to_fit();
+            continue;
+        }
+        tempTower.push_back(Block(stoi(temp)));
+        numOfBlocks++;
+    }
+    file.close();
+}
 
 void BlockNode::deleteBlockNode(){
     for(auto iter = torres.begin(); iter != torres.end(); ++iter){
@@ -57,6 +83,15 @@ void BlockNode::changeBlock(int sourceTorre, int destTorre){
     Block tempBlock = torres[sourceTorre].back();
     torres[sourceTorre].pop_back();
     torres[destTorre].push_back(tempBlock);
+}
+
+void BlockNode::print(){
+    for(auto iter = torres.begin(); iter != torres.end(); ++iter){
+        for(auto iter2 = iter->begin(); iter2 != iter->end(); ++iter2){
+            cout<<iter2->id<<" ";
+        }
+        cout<<endl;
+    }
 }
 
 #endif

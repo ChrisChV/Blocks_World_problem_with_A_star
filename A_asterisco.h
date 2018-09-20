@@ -14,6 +14,34 @@ typedef float HeuristicValue;
 template <typename NodeObject>
 class A_Asterisco{
     public:
+        class Node{
+            public:
+                Node(){
+                    this->heuristicValue = 0;
+                };
+                Node(Node * father){
+                    this->heuristicValue = 0;
+                    this->father = father;
+                }
+                Node(NodeObject nodeObject, Node * father){
+                    this->nodeObject = nodeObject;
+                    this->heuristicValue = 0;
+                    this->father = father;
+                };
+                
+                void createSons(function<vector<NodeObject>(NodeObject &)> createSonsFunction,
+                                    function<HeuristicValue(NodeObject &)> heuristicFunction);
+                void setHeuristicValue(function<HeuristicValue(NodeObject &)> heuristicFunction);
+                void deleteNode();
+
+                vector<Node *> sons;
+                NodeObject nodeObject;
+                Node * father;
+                HeuristicValue heuristicValue;                
+
+        };
+
+
         A_Asterisco(function<HeuristicValue(NodeObject &)> heuristicFunction,
                  function<vector<NodeObject>(NodeObject &)> createSonsFunction, 
                  function<bool(Node *, Node *)> heapCompareFunction,
@@ -24,27 +52,10 @@ class A_Asterisco{
                      this->heapCompareFunction = heapCompareFunction;
                      visited = HashTable<NodeObject *>(hashFunction, compareFunction);
                  };
+
         vector<NodeObject> start(NodeObject initObject, HeuristicValue metaValue);
-        class Node{
-            public:
-                Node(){
-                    this->heuristicValue = 0;
-                };
-                Node(NodeObject nodeObject, Node * father){
-                    this->nodeObject = nodeObject;
-                    this->heuristicValue = 0;
-                    this->father = father;
-                };
-                void createSons();
-                void setHeuristicValue();
-                void deleteNode();
 
-                vector<Node *> sons;
-                NodeObject nodeObject;
-                Node * father;
-                HeuristicValue heuristicValue;                
 
-        };
     private:
         void addSonsToHeap(Node * node);
         void deleteAll();
@@ -61,10 +72,12 @@ class A_Asterisco{
 template <typename NodeObject>
 vector<NodeObject> A_Asterisco<NodeObject>::start(NodeObject initObject, HeuristicValue metaValue){
     root = new Node(initObject, nullptr);
-    root->setHeuristicValue();
+    root->setHeuristicValue(heuristicFunction);
     Node * actualNode = root;
     while(actualNode->heuristicValue != metaValue){
-        actualNode->createSons();
+        cout<<"Nodo actual ("<<actualNode->heuristicValue<<"):"<<endl<<endl;
+        actualNode->createSons(createSonsFunction, heuristicFunction);
+        cout<<endl;
         addSonsToHeap(actualNode);
         pop_heap(heapOfNodes.begin(), heapOfNodes.end(), heapCompareFunction);
         actualNode = heapOfNodes.back();
@@ -92,25 +105,26 @@ void A_Asterisco<NodeObject>::addSonsToHeap(Node * node){
 }
 
 template <typename NodeObject>
-void A_Asterisco<NodeObject>::Node::createSons(){
+void A_Asterisco<NodeObject>::Node::createSons(function<vector<NodeObject>(NodeObject &)> createSonsFunction,
+                                                function<HeuristicValue(NodeObject &)> heuristicFunction){
     vector<NodeObject> nodeSons = createSonsFunction(this->nodeObject);
     for(auto iter = nodeSons.begin(); iter != nodeSons.end(); ++iter){
-        this->sons.push_back(new Node(nodeSons, this));
-        this->sons.back()->setHeuristicValue();
+        this->sons.push_back(new Node((*iter), this));
+        this->sons.back()->setHeuristicValue(heuristicFunction);
     }
     nodeSons.clear();
     nodeSons.shrink_to_fit();
 }
 
 template <typename NodeObject>
-void A_Asterisco<NodeObject>::Node::setHeuristicValue(){
+void A_Asterisco<NodeObject>::Node::setHeuristicValue(function<HeuristicValue(NodeObject &)> heuristicFunction){
     this->heuristicValue = heuristicFunction(this->nodeObject);
 }
 
 template <typename NodeObject>
 void A_Asterisco<NodeObject>::Node::deleteNode(){
     for(auto iter = sons.begin(); iter != sons.end(); ++iter){
-        iter->deleteNode();
+        (*iter)->deleteNode();
     }
     sons.clear();
     sons.shrink_to_fit();

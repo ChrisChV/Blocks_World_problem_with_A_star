@@ -9,6 +9,7 @@ using namespace std;
 
 BlockNode goalNode;
 
+// Heuristic idea from http://www.d.umn.edu/~kvanhorn/cs2511/discussions/heuristics.html
 HeuristicValue heuristic(BlockNode & node){
     HeuristicValue res = 0;
     bool casesFlag = false;
@@ -43,20 +44,22 @@ HeuristicValue heuristic(BlockNode & node){
 }
 
 vector<BlockNode> createSons(BlockNode & father){
+    father.print();
     vector<BlockNode> res;
     BlockNode tempBlockNode;
     for(int i = 0; i < father.torres.size(); ++i){
-        tempBlockNode.deleteBlockNode();
-        tempBlockNode = father;
         for(int j = 0; j < father.torres.size(); ++j){
-            if(i == j) continue;
+            if(i == j) continue;    
+            if(father.torres[i].size() == 0) continue;
+            tempBlockNode.deleteBlockNode();
+            tempBlockNode = father;
             tempBlockNode.changeBlock(i, j);
+            res.push_back(tempBlockNode);
+            //Here we can write the restrictions too
+
         }
-
-        //Here we can write the restrictions too
-
-        res.push_back(tempBlockNode);
     }
+    tempBlockNode.deleteBlockNode();
     return res;
 }
 

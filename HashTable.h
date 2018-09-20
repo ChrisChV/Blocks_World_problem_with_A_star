@@ -6,11 +6,14 @@
 #include <vector>
 #include <map>
 
+using namespace std;
+
 typedef int HashKey;
 
 template <typename ClassValue>
 class HashTable{
     public:
+        HashTable(){};
         HashTable(function<HashKey(ClassValue)> hashFunction, function<bool(ClassValue, ClassValue)> compareFunction){
             this->hashFunction = hashFunction;
             this->compareFunction = compareFunction;
@@ -27,25 +30,25 @@ class HashTable{
 };
 
 template <typename ClassValue>
-void HashTable::insert(ClassValue cValue){
+void HashTable<ClassValue>::insert(ClassValue cValue){
     this->hashTable[hashFunction(cValue)].push_back(cValue);
 }
 
 template <typename ClassValue>
-bool HashTable::exist(ClassValue cValue){
-    map<HashKey, vector<ClassValue>>::iterator findIter = hashTable.find(hashFunction(cValue));
+bool HashTable<ClassValue>::exist(ClassValue cValue){
+    typename map<HashKey, vector<ClassValue>>::iterator findIter = hashTable.find(hashFunction(cValue));
     if(findIter == hashTable.end()) return false;
-    for(auto iter = findIter.second.begin(); iter != findIter.second.end(); ++iter){
+    for(auto iter = findIter->second.begin(); iter != findIter->second.end(); ++iter){
         if(compareFunction(cValue, *iter) == true) return true;
     }
     return false;
 }
 
 template <typename ClassValue>
-void HashTable::clear(){
+void HashTable<ClassValue>::clear(){
     for(auto iter = hashTable.begin(); iter != hashTable.end(); ++iter){
-        iter.second.clear();
-        iter.second.shrink_to_fit();
+        iter->second.clear();
+        iter->second.shrink_to_fit();
     }
     hashTable.clear();
 }
