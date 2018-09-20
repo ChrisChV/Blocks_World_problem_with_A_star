@@ -18,12 +18,10 @@ class A_Asterisco{
                  function<vector<NodeObject>(NodeObject &)> createSonsFunction, 
                  function<bool(Node *, Node *)> heapCompareFunction,
                  function<HashKey(NodeObject *)> hashFunction,
-                 function<bool(NodeObject &)> restrictionFunction,
                  function<bool(NodeObject *, NodeObject *)> compareFunction){
                      this->heuristicFunction = heuristicFunction;
                      this->createSonsFunction = createSonsFunction;
                      this->heapCompareFunction = heapCompareFunction;
-                     this->restrictionFunction = restrictionFunction;
                      visited = HashTable<NodeObject *>(hashFunction, compareFunction);
                  };
         vector<NodeObject> start(NodeObject initObject, HeuristicValue metaValue);
@@ -56,7 +54,6 @@ class A_Asterisco{
         HashTable<NodeObject *> visited; 
         function<HeuristicValue(NodeObject &)> heuristicFunction;
         function<vector<NodeObject>(NodeObject &)> createSonsFunction;
-        function<bool(NodeObject &)> restrictionFunction;
         function<bool(Node *, Node *)> heapCompareFunction;
 
 };
@@ -87,7 +84,7 @@ vector<NodeObject> A_Asterisco<NodeObject>::start(NodeObject initObject, Heurist
 template <typename NodeObject>
 void A_Asterisco<NodeObject>::addSonsToHeap(Node * node){
     for(auto iter = node->sons.begin(); iter != node->sons.end(); ++iter){
-        if(!visited.exist(&( (*iter)->nodeObject)) and restrictionFunction((*iter)->nodeObject)){
+        if(!visited.exist(&( (*iter)->nodeObject))){
             heapOfNodes.push_back(*iter);
             push_heap(heapOfNodes.begin(), heapOfNodes.end(), heapCompareFunction);
         }

@@ -7,27 +7,61 @@
 
 using namespace std;
 
+BlockNode goalNode;
+
 HeuristicValue heuristic(BlockNode & node){
     HeuristicValue res = 0;
-
-    /*
-    TODO
-    */
-
-   node.heuristicValue = res;
-   return res;
+    bool casesFlag = false;
+    for(int i = 0; i < node.torres.size(); i++){
+        //Case 1: Current state has a blank and goal state has a block. 
+        if(node.torres[i].empty() and !goalNode.torres[i].empty()){
+            res += goalNode.torres[i].size();
+        } 
+        //Case 2:  Current state has a block and goal state has a blank. 
+        else if(!node.torres[i].empty() and goalNode.torres[i].empty()){
+            res += node.torres[i].size();
+        }        
+        else{
+            casesFlag = false;
+            for(int j = 0; j < node.torres[i].size(); j++){
+                // Case 3: The incorrect block must be moved out and the correct blocks must be moved in. Increment the heuristic value by the number of these blocks. 
+                if(j == goalNode.torres[i].size() or node.torres[i][j] != goalNode.torres[i][j]){
+                    res += node.torres[i].size() - j;
+                    res += goalNode.torres[i].size() - j;
+                    casesFlag = true;
+                    break;
+                }
+            }
+            // Case 4: Increment the heuristic value by the number of incorrect positions above the correct block. 
+            if(!casesFlag and node.torres[i].size() < goalNode.torres[i].size()){
+                res += goalNode.torres[i].size() - node.torres[i].size();
+            }
+        }
+    }
+    node.heuristicValue = res;
+    return res;
 }
 
 vector<BlockNode> createSons(BlockNode & father){
-    
+    vector<BlockNode> res;
+    BlockNode tempBlockNode;
+    for(int i = 0; i < father.torres.size(); ++i){
+        tempBlockNode.deleteBlockNode();
+        tempBlockNode = father;
+        for(int j = 0; j < father.torres.size(); ++j){
+            if(i == j) continue;
+            tempBlockNode.changeBlock(i, j);
+        }
+
+        //Here we can write the restrictions too
+
+        res.push_back(tempBlockNode);
+    }
+    return res;
 }
 
 bool heapCompare(A_Asterisco<BlockNode>::Node * a, A_Asterisco<BlockNode>::Node * b){
     return a->heuristicValue > b->heuristicValue;
-}
-
-bool restrictions(BlockNode & node){
-    return true;
 }
 
 HashKey hashFun(BlockNode * node){
