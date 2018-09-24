@@ -17,7 +17,7 @@ using namespace std;
 GLfloat xRotated[15], yRotated[15], zRotated[15];
 
 int window_2, window_1;
-int blocks=0;
+//float blocks=5;
 int torres=0;
 
 GLfloat matrixP[5][5] =
@@ -155,8 +155,10 @@ void specialKeys(int key, int x, int y){
 }
 
 void specialKeys2(int key, int x, int y){
-	if(key == GLUT_KEY_RIGHT) rotate_y2 += 5;
-	else if(key == GLUT_KEY_LEFT) rotate_y2 -=5;
+	//if(key == GLUT_KEY_RIGHT) //rotate_y2 += 5;
+	//else if(key == GLUT_KEY_LEFT) rotate_y2 -=5;
+	if(key == GLUT_KEY_UP) rotate_y2 +=5;
+	else if(key == GLUT_KEY_DOWN) rotate_y2 -= 5;
 	//else if(key == GLUT_KEY_UP) rotate_x +=5;
 	//else if(key == GLUT_KEY_DOWN) rotate_x -= 5;
 	glutPostRedisplay();
@@ -164,10 +166,15 @@ void specialKeys2(int key, int x, int y){
 
 void display_1(){
 	float tam=5;
+	float blocks=5; 
 	//int prueba=0;
+	for (int i = 0; i < actual.torres.size(); ++i)
+	{
+		tam=tam*0.7;
+	}
 	for (int i = 0; i < actual.numOfBlocks; ++i)
 	{
-		tam=tam*0.8;
+		blocks=blocks*0.5;
 	}
 	
 	glClearColor(0,0,0,1);
@@ -201,7 +208,7 @@ void display_1(){
 		{
 			if (actual.torres[i][j].id!=0)
 			{
-				DrawCube(0,y_ini+(i*tam+1),z_ini+(j*tam),tam,actual.torres[i][j].id);
+				DrawCube(0,y_ini+(i*tam+tam),z_ini+(j*tam),(tam),actual.torres[i][j].id);
 				//id++;
 			}
 		}
@@ -217,12 +224,16 @@ void display_1(){
 void display_2(){
 
 	float tam=5;
+	float blocks=5; 
 	//int prueba=0;
+	for (int i = 0; i < actual.torres.size(); ++i)
+	{
+		tam=tam*0.7;
+	}
 	for (int i = 0; i < actual.numOfBlocks; ++i)
 	{
-		tam=tam*0.8;
+		blocks=blocks*0.5;
 	}
-	
 	glClearColor(0,0,0,1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
@@ -248,7 +259,7 @@ void display_2(){
 		{
 			if (final.torres[i][j].id!=0)
 			{
-				DrawCube(0,y_ini+(i*tam+1),z_ini+(j*tam),tam,final.torres[i][j].id);
+				DrawCube(0,y_ini+(i*tam)+tam,z_ini+(j*tam),tam,final.torres[i][j].id);
 				//id++;
 			}
 		}
@@ -294,28 +305,28 @@ if(argc != 3){
     string fileOfGoalBlockName(argv[2]);
     BlockNode initBlock(fileOfInitBlockName);
     BlockNode goalBlock(fileOfGoalBlockName);
-    if(initBlock.numOfBlocks != goalBlock.numOfBlocks){
+    /*if(initBlock.numOfBlocks != goalBlock.numOfBlocks){
         cout<<"El número de bloques entre el inicial y el final no coincide"<<endl;
         return 2;
     }
     if(initBlock.torres.size() != goalBlock.torres.size()){
         cout<<"El número de torres entre el inicial y el final no coincide"<<endl;
         return 3;
-    }
+    }*/
     goalNode = goalBlock;
     A_Asterisco<BlockNode> Aa(heuristic, createSons, heapCompare, hashFun, hashCompare);
     res = Aa.start(initBlock, 0);
     actual=res[iteracion];
     final=res[res.size()-1];
 
-    cout<<endl<<endl;
-    cout<<"--------Solución-------"<<endl;
+  //  cout<<endl<<endl;
+    /*cout<<"--------Solución-------"<<endl;
 
     for(BlockNode node : res){
         cout<<endl;
         node.print();
         cout<<endl;
-    }
+    }*/
     
   //  return 0;
 
@@ -335,7 +346,7 @@ window_2 = glutCreateWindow ("s2");
 glutSetWindowTitle("SOLUCION A ALCANZAR");
 init ();
 glutDisplayFunc(display_2);
-//glutSpecialFunc(specialKeys2);
+glutSpecialFunc(specialKeys2);
    //glutReshapeFunc(reshape_2);
 //glutReshapeFunc(reshape);
 //Set the function for the animation.
